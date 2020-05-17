@@ -1,0 +1,27 @@
+assert(getprop("ro.product.device") == "cepheus" || getprop("ro.build.product") == "cepheus" || abort("E3004: This package is for device: cepheus; this device is " + getprop("ro.product.device") + "."););
+ui_print("Target: Xiaomi/aosp_cepheus/cepheus:10/QQ1B.191205.011/07fc878def:userdebug/test-keys");
+ifelse(is_mounted("/system"), unmount("/system"));
+ui_print("----------------------------------------------");
+ui_print("              Pixel Experience");
+ui_print("               by jhenrique09");
+ui_print("----------------------------------------------");
+ui_print(" Android version: 10");
+ui_print(" Build id: QQ1B.191205.011");
+ui_print(" Build date: 20191219-0907");
+ui_print(" Security patch: 2019-12-05");
+ui_print(" Device: cepheus");
+ui_print("----------------------------------------------");
+show_progress(0.650000, 0);
+ui_print("Patching system image unconditionally...");
+block_image_update("/dev/block/bootdevice/by-name/system", package_extract_file("system.transfer.list"), "system.new.dat.br", "system.patch.dat") ||
+  abort("E1001: Failed to update system image.");
+ui_print("Patching vendor image unconditionally...");
+show_progress(0.100000, 0);
+block_image_update("/dev/block/bootdevice/by-name/vendor", package_extract_file("vendor.transfer.list"), "vendor.new.dat.br", "vendor.patch.dat") ||
+  abort("E2001: Failed to update vendor image.");
+show_progress(0.050000, 5);
+package_extract_file("boot.img", "/dev/block/bootdevice/by-name/boot");
+show_progress(0.200000, 10);
+ui_print("Patching dtbo image unconditionally...");
+package_extract_file("dtbo.img", "/dev/block/bootdevice/by-name/dtbo");
+set_progress(1.000000);
